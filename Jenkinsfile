@@ -5,8 +5,8 @@ pipeline {
       steps {
       	script {
         	// Set global Git identity using Jenkins environment variables
-          bat "git config --global user.name '\${GITHUB_NAME}'"
-          bat "git config --global user.email '\${GITHUB_EMAIL}'"
+          bat 'git config --global user.name "${GITHUB_NAME}"'
+          bat 'git config --global user.email "${GITHUB_EMAIL}"'
         }
       }
     }
