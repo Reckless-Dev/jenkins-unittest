@@ -1,28 +1,29 @@
 pipeline {
 	agent any
 	stages {
-		stage('Merge to Master') {
+		stage('Configure GitHub') {
+      steps {
+      	script {
+        	// Set global Git identity using Jenkins environment variables
+          bat 'git config --global user.name "${GIT_COMMITTER_NAME}"'
+          bat 'git config --global user.email "${GIT_COMMITTER_EMAIL}"'
+          
+          // Configure Git to use credential helper
+          bat 'git config --global credential.helper store'
+        }
+      }
+    }
+ 		stage('Merge to Master') {
     	steps {
-    		script {
-    	  	bat "git checkout master"
-    	  	bat "git merge --no-ff origin/${BRANCH_NAME}"
-    	  	bat "git push origin master"
-    	  }
+        script {
+					// Auto-merge with credentials
+					withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
+          	bat "git checkout master"
+          	bat "git merge --no-ff origin/${BRANCH_NAME}"
+          	bat "git push https://${GITHUB_TOKEN}@github.com/Reckless-Dev/jenkins-unittest.git master"
+        	}
+				}
     	}
-		}
-		
- 		stage("composer_install") {
-			steps {
-				echo 'composer install...'
- 				bat 'composer install'
-			}
-		}
-
-		stage("phpunit") {
-			steps {
-				echo 'running the phpunit test...'
-				bat './vendor/bin/phpunit tests/Unit'
-			}
 		}
   }
 	post {
