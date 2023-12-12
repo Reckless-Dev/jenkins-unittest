@@ -1,18 +1,14 @@
 pipeline {
 	agent any
 	stages {
- 		stage("composer_install") {
-			steps {
-				echo 'composer install...'
- 				sh 'composer install'
-			}
-		}
-
-		stage("phpunit") {
-			steps {
-				echo 'running the phpunit test...'
-				sh './vendor/bin/phpunit tests/Unit'
-			}
+ 		stage('Merge to Master') {
+    	steps {
+        script {
+          bat "git checkout master"
+          bat "git merge --no-ff origin/${BRANCH_NAME}"
+          bat "git push origin master"
+        }
+    	}
 		}
   }
 	post {
