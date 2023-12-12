@@ -15,7 +15,7 @@ pipeline {
         script {
           bat "git checkout master"
           bat "git merge --no-ff origin/${BRANCH_NAME}"
-          bat "git push origin master"
+          bat "git push -u origin master"
         }
     	}
 		}
