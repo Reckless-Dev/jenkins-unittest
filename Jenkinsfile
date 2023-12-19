@@ -30,6 +30,7 @@ pipeline {
         script {
 					// Auto-merge with credentials
 					withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
+            bat 'git clean -fdx'
             bat "git checkout master"
           	bat "git pull https://${GITHUB_TOKEN}@github.com/Reckless-Dev/jenkins-unittest.git master" // Pull changes from the remote master
           	bat "git merge --no-ff origin/${BRANCH_NAME}"
