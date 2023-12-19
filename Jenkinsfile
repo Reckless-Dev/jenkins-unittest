@@ -1,5 +1,10 @@
 pipeline {
 	agent any
+
+  environment {
+    SSH_KEY = credentials('ec35cc0b-e77f-4603-b7fe-7aafe4002087')
+  }
+  
 	stages {
 		stage('Configure GitHub') {
       steps {
@@ -17,7 +22,7 @@ pipeline {
     	steps {
         script {
 					// Auto-merge with credentials
-					withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
+					withCredentials([sshUserPrivateKey(credentialsId: 'ec35cc0b-e77f-4603-b7fe-7aafe4002087', keyFileVariable: 'SSH_KEY')]) {
           	bat "git checkout master"
           	bat "git merge --no-ff origin/${BRANCH_NAME}"
           	bat "git push https://${GITHUB_TOKEN}@github.com/Reckless-Dev/jenkins-unittest.git master"
