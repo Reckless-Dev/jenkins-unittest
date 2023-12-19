@@ -25,6 +25,7 @@ pipeline {
 					withCredentials([sshUserPrivateKey(credentialsId: 'ec35cc0b-e77f-4603-b7fe-7aafe4002087', keyFileVariable: 'SSH_KEY')]) {
             try {
               bat "git checkout master"
+          	  bat "git pull origin master"  
           	  bat "git merge --no-ff origin/${BRANCH_NAME}"
           	  bat "git push origin master"  
             } catch (Exception e) {
