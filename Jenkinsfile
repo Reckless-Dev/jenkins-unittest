@@ -30,15 +30,10 @@ pipeline {
         script {
 					// Auto-merge with credentials
 					withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
-          	try {
-              bat "git checkout master"
-          	  bat "git pull https://${GITHUB_TOKEN}@github.com/Reckless-Dev/jenkins-unittest.git master" // Pull changes from the remote master
-          	  bat "git merge --no-ff origin/${BRANCH_NAME}"
-          	  bat "git push https://${GITHUB_TOKEN}@github.com/Reckless-Dev/jenkins-unittest.git master"
-            } catch (Exception e) {
-              echo "Error during Git operations : ${e.message}"
-              currentBuild.result = 'FAILURE'
-            }
+            bat "git checkout master"
+          	bat "git pull https://${GITHUB_TOKEN}@github.com/Reckless-Dev/jenkins-unittest.git master" // Pull changes from the remote master
+          	bat "git merge --no-ff origin/${BRANCH_NAME}"
+          	bat "git push https://${GITHUB_TOKEN}@github.com/Reckless-Dev/jenkins-unittest.git master"
         	}
 				}
     	}
