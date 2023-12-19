@@ -1,11 +1,17 @@
 pipeline {
 	agent any
-
-  environment {
-    SSH_KEY = credentials('ec35cc0b-e77f-4603-b7fe-7aafe4002087')
-  }
-
 	stages {
+		stage('Deployment') {
+			steps {
+				// Create an Approval Button with a timeout of 15minutes.
+	    	timeout(time: 15, unit: "MINUTES") {
+	    		input message: 'Do you want to approve the deployment?', ok: 'Yes'
+	    	}
+
+				echo "Initiating deployment"
+	  	}
+		}
+
 		stage('Configure GitHub') {
       steps {
       	script {
@@ -18,20 +24,16 @@ pipeline {
         }
       }
     }
+
  		stage('Merge to Master') {
     	steps {
         script {
 					// Auto-merge with credentials
-					withCredentials([sshUserPrivateKey(credentialsId: 'ec35cc0b-e77f-4603-b7fe-7aafe4002087', keyFileVariable: 'SSH_KEY')]) {
-            try {
-              bat "git checkout master"
-          	  bat "git pull origin master"  
-          	  bat "git merge --no-ff origin/${BRANCH_NAME}"
-          	  bat "git push origin master"  
-            } catch (Exception e) {
-              echo "Error during Git operations : ${e.message}"
-              currentBuild.result = 'FAILURE'
-            }
+					withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
+          	bat "git checkout master"
+          	bat "git pull https://${GITHUB_TOKEN}@github.com/Reckless-Dev/jenkins-unittest.git master" // Pull changes from the remote master
+          	bat "git merge --no-ff origin/${BRANCH_NAME}"
+          	bat "git push https://${GITHUB_TOKEN}@github.com/Reckless-Dev/jenkins-unittest.git master"
         	}
 				}
     	}
