@@ -4,7 +4,7 @@ pipeline {
   environment {
     SSH_KEY = credentials('ec35cc0b-e77f-4603-b7fe-7aafe4002087')
   }
-  
+
 	stages {
 		stage('Configure GitHub') {
       steps {
@@ -23,14 +23,20 @@ pipeline {
         script {
 					// Auto-merge with credentials
 					withCredentials([sshUserPrivateKey(credentialsId: 'ec35cc0b-e77f-4603-b7fe-7aafe4002087', keyFileVariable: 'SSH_KEY')]) {
-          	bat "git checkout master"
-          	bat "git merge --no-ff origin/${BRANCH_NAME}"
-          	bat "git push https://${GITHUB_TOKEN}@github.com/Reckless-Dev/jenkins-unittest.git master"
+            try {
+              bat "git checkout master"
+          	  bat "git merge --no-ff origin/${BRANCH_NAME}"
+          	  bat "git push origin master"  
+            } catch (Exception e) {
+              echo "Error during Git operations : ${e.message}"
+              currentBuild.result = 'FAILURE'
+            }
         	}
 				}
     	}
 		}
   }
+
 	post {
     success {
         echo 'Success!'
