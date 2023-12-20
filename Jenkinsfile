@@ -44,26 +44,11 @@ pipeline {
       steps {
         script {
           // Get information
-          def committerName = bat(script: 'git log -1 --pretty=format:"%%cn%%"', returnStdout: true).trim()
-          def authorName = bat(script: 'git log -1 --pretty=format:"%%an%%"', returnStdout: true).trim()
-          def commitTimestamp = bat(script: 'git log -1 --pretty=format:"%%ct%%"', returnStdout: true).trim()
-          def commitMessage = bat(script: 'git log -1 --pretty=format:"%%s%%"', returnStdout: true).trim()
-          def commitHash = bat(script: 'git log -1 --pretty=format:"%%H%%"', returnStdout: true).trim()
-
-          echo "Latest commit by ${authorName} on ${commitTimestamp}:"
-          echo "- Commit message: ${commitMessage}"
-          echo "- Commit hash: ${commitHash}"
-
-          // Update README file with information
-          writeFile file: 'README.md', text: """
-          # My Awesome Project
-
-          This project is maintained by ${committerName}.
-
-          Latest commit by ${authorName} on ${commitTimestamp}:
-          - Commit message: ${commitMessage}
-          - Commit hash: ${commitHash}
-          """
+          echo "Git Commit $GIT_COMMIT"
+          echo "Env Git Name ${env.GIT_COMMITTER_NAME}"
+          echo "Env Git Author Name ${env.GIT_AUTHOR_NAME}"
+          echo "Git Author Name $GIT_AUTHOR_NAME"
+          echo "Git Commiter Name $GIT_COMMITTER_NAME"
         }
       }
     }
