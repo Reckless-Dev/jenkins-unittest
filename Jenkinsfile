@@ -40,18 +40,18 @@ pipeline {
     	}
 		}
 
-    stage('Display and Update Information') {
-      steps {
-        script {
-          // Get information
-          echo "Git Commit $GIT_COMMIT"
-          echo "Env Git Name ${env.GIT_COMMITTER_NAME}"
-          echo "Env Git Author Name ${env.GIT_AUTHOR_NAME}"
-          echo "Git Author Name $GIT_AUTHOR_NAME"
-          echo "Git Commiter Name $GIT_COMMITTER_NAME"
-        }
-      }
-    }
+    // stage('Display and Update Information') {
+    //   steps {
+    //     script {
+    //       // Get information
+    //       echo "Git Commit $GIT_COMMIT"
+    //       echo "Env Git Name ${env.GIT_COMMITTER_NAME}"
+    //       echo "Env Git Author Name ${env.GIT_AUTHOR_NAME}"
+    //       echo "Git Author Name $GIT_AUTHOR_NAME"
+    //       echo "Git Commiter Name $GIT_COMMITTER_NAME"
+    //     }
+    //   }
+    // }
   }
 
 	post {
