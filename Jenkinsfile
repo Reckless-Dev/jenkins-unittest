@@ -5,7 +5,7 @@ pipeline {
 			steps {
 				// Create an Approval Button with a timeout of 15minutes.
 	    	// timeout(time: 15, unit: "MINUTES") {
-	    	input message: 'Do you want to approve the deployment?', ok: 'Yes'
+	    		input message: 'Do you want to approve the deployment?', ok: 'Yes'
 	    	// }
 
 				echo "Initiating deployment"
@@ -39,6 +39,34 @@ pipeline {
 				}
     	}
 		}
+
+    stage('Display and Update Information') {
+      steps {
+        script {
+          // Get information
+          def committerName = bat(script: 'git log -1 --pretty=format:"%%cn%%"', returnStdout: true).trim()
+          def authorName = bat(script: 'git log -1 --pretty=format:"%%an%%"', returnStdout: true).trim()
+          def commitTimestamp = bat(script: 'git log -1 --pretty=format:"%%ct%%"', returnStdout: true).trim()
+          def commitMessage = bat(script: 'git log -1 --pretty=format:"%%s%%"', returnStdout: true).trim()
+          def commitHash = bat(script: 'git log -1 --pretty=format:"%%H%%"', returnStdout: true).trim()
+
+          echo "Latest commit by ${authorName} on ${commitTimestamp}:"
+          echo "- Commit message: ${commitMessage}"
+          echo "- Commit hash: ${commitHash}"
+
+          // Update README file with information
+          writeFile file: 'README.md', text: """
+          # My Awesome Project
+
+          This project is maintained by ${committerName}.
+
+          Latest commit by ${authorName} on ${commitTimestamp}:
+          - Commit message: ${commitMessage}
+          - Commit hash: ${commitHash}
+          """
+        }
+      }
+    }
   }
 
 	post {
